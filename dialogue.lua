@@ -15,25 +15,12 @@ function M:addScript()
 	local script = {
 		currentPos = 0,
 		currentBranch = "main",
+		characterName = "none",
 		selectedOption = nil,
 		pauseForInput = false,
 		selection = nil,
 		branch = {},
 	}
-
-	function script:getBranchCount()
-		local count = 0
-
-		for k, v in pairs(self.branch) do
-			count = count + 1
-		end
-
-		return count
-	end
-
-	function script:setBranch(key)
-		self.currentBranch = key
-	end
 
 	function script:addBranch(key)
 		if (self.branch[key] ~= nil) then
@@ -41,6 +28,10 @@ function M:addScript()
 		end
 
 		self.branch[key] = {}
+		self.currentBranch = key
+	end
+
+	function script:setBranch(key)
 		self.currentBranch = key
 	end
 
@@ -55,7 +46,11 @@ function M:addScript()
 			branchTo = branchTo
 		}
 
-		print(#self.branch[self.currentBranch], "branch:",  self.currentBranch)
+		print(#self.branch[self.currentBranch], "branch:", self.currentBranch)
+	end
+
+	function script:characterName(name)
+		self.characterName = name
 	end
 
 	function script:select(optionNumber)
@@ -89,7 +84,9 @@ function M:addScript()
 		end
 
 		if (self.currentPos < #self.branch[self.currentBranch]) then
-			if (self.currentPos > 0 and self.branch[self.currentBranch][self.currentPos + 1] ~= nil and self.branch[self.currentBranch][self.currentPos + 1].menu) then
+			local nextBranch = self.currentPos > 0 and self.branch[self.currentBranch][self.currentPos + 1] or nil
+
+			if (nextBranch ~= nil and nextBranch.menu) then
 				self.pauseForInput = true
 			end
 
